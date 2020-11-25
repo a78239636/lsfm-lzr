@@ -4,9 +4,15 @@ import numpy as np
 from lsfm import landmark_mesh, landmark_and_correspond_mesh
 from menpo.shape import ColouredTriMesh, TexturedTriMesh, TriMesh, PointCloud
 import lsfm.io as lio
+from lsfm.landmark_my import landmark_mesh_my
 
 def headline(string):
      print("\n\n----------{0}----------\n".format(string))
+
+def generate_trilist(points):
+     from scipy.spatial import Delaunay  # expensive
+     trilist = Delaunay(points).simplices
+     return trilist
 
 def import_obj():
      james =  Path('/home/li_gang/TestFile/NewInput2/james.obj')
@@ -19,7 +25,6 @@ def import_obj():
 def import_full_ply(filename, verbose=True):
      file_dir = str(filename) # 文件的路径
      print("ply file name = ", file_dir)
-
 
      from menpo3d.io.input.mesh.base import vtk_ensure_trilist
      import vtk
@@ -62,6 +67,8 @@ def import_full_ply(filename, verbose=True):
           print("tri List = ", mesh.trilist)
      return mesh
 
-opt1 = '/home/li_gang/TestFile/HLSInput/face-reconstruction-template.ply'
-import_full_ply(opt1)
+if __name__ == '__main__':
+    opt1 = '/home/li_gang/TestFile/HLSInput/face-reconstruction-template.ply'
+    cmesh = import_full_ply(opt1)
+    landmark_mesh_my(cmesh)
 #import_obj()

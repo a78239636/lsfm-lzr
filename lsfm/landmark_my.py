@@ -38,7 +38,7 @@ def landmark_mesh_my(mesh, img_shape=(320, 240), verbose=False):
     fitter = load_balanced_frontal_face_fitter()
     # seemed a face detector
     detector = load_dlib_frontal_face_detector()
-    camera = perspective_camera_for_template(img_shape)
+    camera = perspective_camera_for_template(img_shape, 0.5)
 
     # Pre-process - align the mesh roughly with the template
     aligned_mesh = align_mesh_to_template(mesh, load_template()).apply(mesh)
@@ -66,9 +66,10 @@ def landmark_mesh_my(mesh, img_shape=(320, 240), verbose=False):
 
     print("Final Texture img ={0}  \nchannel = {1}".format(img, img.n_channels))
   #  print("Final Shape img = ", shape_img)
+
+    inter_images = Path("/home/li_gang/TestFile/Inter-Imges")
     print("Export Final image to : ", "/home/li_gang/TestFile/Inter-Imges")
-    print(img.as_vector())
-    export_landmark_visualization(Path("/Inter-Imges"), "texture", img)
+    export_landmark_visualization(inter_images, "texture", img)
     # 2. Find the one bounding box in the rendered image
     bboxes = detector(img)
     if len(bboxes) != 1:
@@ -108,5 +109,7 @@ def landmark_mesh_my(mesh, img_shape=(320, 240), verbose=False):
                                      line_colour='blue',
                                      marker_edge_colour=marker_edge_colours)
     return_dict['landmarked_image'] = lm_img
-    export_landmark_visualization(Path("/Inter-Imges"), "landmarked", lm_img)
+    export_landmark_visualization(inter_images, "landmarked", lm_img)
+
+    print()
     return return_dict

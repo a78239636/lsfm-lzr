@@ -36,9 +36,14 @@ def initialize_root(root):
 def import_mesh(path):
     if path.suffix == '.pkl' or path.suffix == '.gz':
         mesh = import_pickle(path)
+    elif path.suffix == '.ply':
+        print("use lzr ply importer\n")
+        from lsfm.import_pyl import import_full_ply
+        mesh = import_full_ply(path)
     else:
         mesh = m3io.import_mesh(path)
-    if mesh.texture.pixels.dtype != np.float64:
+    from menpo.shape import TexturedTriMesh
+    if isinstance(mesh, TexturedTriMesh) and mesh.texture.pixels.dtype != np.float64:
         mesh.texture.pixels = normalize_pixels_range(mesh.texture.pixels)
     return mesh
 

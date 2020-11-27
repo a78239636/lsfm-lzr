@@ -11,8 +11,8 @@ from menpofit.aam import load_balanced_frontal_face_fitter
 from .camera import perspective_camera_for_template
 from .data import load_template, LANDMARK_MASK
 
-from menpo.shape import ColouredTriMesh
-
+#lzr add
+from menpo.shape import TexturedTriMesh, ColouredTriMesh
 
 @lru_cache()
 def load_fitter():
@@ -32,9 +32,14 @@ def align_mesh_to_template(source, target, scale_corrective=1.2):
 
 
 def landmark_mesh(mesh, img_shape=(320, 240), verbose=False):
+    print("type of mesh = ", type(mesh))
     fitter = load_balanced_frontal_face_fitter()
     detector = load_dlib_frontal_face_detector()
-    camera = perspective_camera_for_template(img_shape)
+
+    if (isinstance(mesh, TexturedTriMesh)):
+        camera = perspective_camera_for_template(img_shape, 1.5)
+    else:
+        camera = perspective_camera_for_template(img_shape, 0.5)
     # Pre-process - align the mesh roughly with the template
     aligned_mesh = align_mesh_to_template(mesh, load_template()).apply(mesh)
 
@@ -84,5 +89,5 @@ def landmark_mesh(mesh, img_shape=(320, 240), verbose=False):
                                      line_colour='blue',
                                      marker_edge_colour=marker_edge_colours)
     return_dict['landmarked_image'] = lm_img
-    print("\n Landmark Complete \n")
+    #print("\n Landmark Complete \n")
     return return_dict

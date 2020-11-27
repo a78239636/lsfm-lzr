@@ -19,8 +19,9 @@ def import_obj():
      man = Path('/home/li_gang/TestFile/NewInput2/man.obj')
      obj_path = man
      mesh = lio.import_mesh(obj_path)
-     print("mesh = ", mesh)
-     landmark_mesh(mesh)
+     return mesh
+     #print("mesh = ", mesh)
+     #landmark_mesh(mesh)
 
 def import_full_ply(filename, verbose=True):
      file_dir = str(filename) # 文件的路径
@@ -44,19 +45,20 @@ def import_full_ply(filename, verbose=True):
           print(vertexs.dtype)
           print("This is TriList : ", trilist)
 
+     max_range = 255.0
      points_list = []
      colors_list = []
      for verx in vertexs:
-         points_list.append( ( verx[0], verx[1], verx[2] ) )
-         colors_list.append( ( verx[3], verx[4], verx[5] ) )
+         points_list.append( (verx[0], verx[1], verx[2]) )
+         colors_list.append( (verx[3] * (1.0 / max_range)
+               , verx[4] * (1.0 / max_range), verx[5]* (1.0 / max_range)) )
 
      nd_point = np.array(points_list, dtype=np.float64)
-     nd_color = np.array(colors_list, dtype=np.uint8)
+     nd_color = np.array(colors_list, dtype=np.float64)
 
      if (verbose is True):
           headline("Ndarray INFO")
           print("Point shape = {0} \nColor shape = {1}".format(nd_point.shape, nd_color.shape))
-
 
      mesh = ColouredTriMesh(nd_point, trilist=trilist, colours=nd_color)
      if (verbose is True):
@@ -70,5 +72,9 @@ def import_full_ply(filename, verbose=True):
 if __name__ == '__main__':
     opt1 = '/home/li_gang/TestFile/HLSInput/face-reconstruction-template.ply'
     cmesh = import_full_ply(opt1)
-    landmark_mesh_my(cmesh)
+    jmesh = import_obj()
+    if isinstance(jmesh, ColouredTriMesh):
+         print("yes, I am Textured Mesh")
+    else:
+         print("never thought!")
 #import_obj()
